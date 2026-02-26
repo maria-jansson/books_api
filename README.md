@@ -2,7 +2,7 @@
 
 ## Project Name
 
-*Replace with the name of your API project.*
+Books API
 
 ## Objective
 
@@ -14,7 +14,7 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 
 ## Implementation Type
 
-*Specify: REST or GraphQL*
+REST
 
 ## Links and Testing
 
@@ -38,12 +38,12 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 
 *Describe the dataset you chose:*
 
-| Field | Description |
-|---|---|
-| **Dataset source** | *e.g. Kaggle, public API, CSV, etc.* |
-| **Primary resource (CRUD)** | *e.g. Movies (id, title, release_year, genre, description)* |
-| **Secondary resource 1 (read-only)** | *e.g. Actors (id, name, movies_played)* |
-| **Secondary resource 2 (read-only)** | *e.g. Ratings (id, text, movie)* |
+| Field | Description                                                                                   |
+|---|-----------------------------------------------------------------------------------------------|
+| **Dataset source** | https://www.kaggle.com/datasets/elvinrustam/books-dataset/                                    |
+| **Primary resource (CRUD)** | Books (id, title, author, description, category, publisher, price, publishMonth, publishYear) |
+| **Secondary resource 1 (read-only)** | Authors (id, name, books)                                                                     |
+| **Secondary resource 2 (read-only)** | Categories (id, name, books)                                                                 |
 
 
 ## Design Decisions
@@ -58,10 +58,6 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 - *How did you implement HATEOAS? How does it improve API discoverability?*
 - *How did you structure your resource URLs and use HTTP methods/status codes?*
 
-**GraphQL students:**
-- *How did you design your schema (types, queries, mutations)?*
-- *How did you implement nested queries? How does the single-endpoint approach affect your design?*
-
 ### Error Handling
 
 *How does your API handle errors? Describe the format and consistency of your error responses.*
@@ -69,7 +65,10 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 ## Core Technologies Used
 
 *List the technologies you chose and briefly explain why:*
-
+Java 21
+Spring Boot
+Hibernate
+PostgreSQL 18
 
 ## Reflection
 
