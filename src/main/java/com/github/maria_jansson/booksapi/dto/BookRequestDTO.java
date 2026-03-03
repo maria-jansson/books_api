@@ -7,9 +7,9 @@ import java.util.List;
 
 public record BookRequestDTO(
         String title,
-        List<Author> authors,
+        List<Long> authorIds,
         String description,
-        List<Category> categories,
+        List<Long> categoryIds,
         String publisher,
         Double price,
         String publishMonth,
