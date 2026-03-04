@@ -1,6 +1,7 @@
 package com.github.maria_jansson.booksapi.service;
 
 import com.github.maria_jansson.booksapi.dto.AuthorDTO;
+import com.github.maria_jansson.booksapi.exception.ResourceNotFoundException;
 import com.github.maria_jansson.booksapi.model.Author;
 import com.github.maria_jansson.booksapi.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class AuthorService {
     }
 
     public AuthorDTO getOneAuthor(Long id) {
-        Author author = authorRepo.findById(id).orElseThrow();
+        Author author = authorRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Author with id " + id + " not found."));
         return new AuthorDTO(author.getId(), author.getName());
     }
 }

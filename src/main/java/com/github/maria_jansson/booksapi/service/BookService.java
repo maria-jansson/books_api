@@ -4,6 +4,7 @@ import com.github.maria_jansson.booksapi.dto.AuthorDTO;
 import com.github.maria_jansson.booksapi.dto.BookDTO;
 import com.github.maria_jansson.booksapi.dto.BookRequestDTO;
 import com.github.maria_jansson.booksapi.dto.CategoryDTO;
+import com.github.maria_jansson.booksapi.exception.ResourceNotFoundException;
 import com.github.maria_jansson.booksapi.model.Author;
 import com.github.maria_jansson.booksapi.model.Book;
 import com.github.maria_jansson.booksapi.model.Category;
@@ -38,7 +39,8 @@ public class BookService {
     }
 
     public BookDTO getOneBook(Long id) {
-        Book book = bookRepo.findById(id).orElseThrow();
+        Book book = bookRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book with id " + id + " not found."));
         return bookToDTO(book);
     }
 
@@ -50,13 +52,16 @@ public class BookService {
     }
 
     public BookDTO updateBook(Long id, BookRequestDTO data) {
-        Book book = bookRepo.findById(id).orElseThrow();
+        Book book = bookRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book with id " + id + " not found."));
         setBookFields(book, data);
         bookRepo.save(book);
         return bookToDTO(book);
     }
 
     public void deleteBook(Long id) {
+        bookRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book with id " + id + " not found."));
         bookRepo.deleteById(id);
     }
 

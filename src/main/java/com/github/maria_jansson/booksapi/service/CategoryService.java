@@ -1,6 +1,7 @@
 package com.github.maria_jansson.booksapi.service;
 
 import com.github.maria_jansson.booksapi.dto.CategoryDTO;
+import com.github.maria_jansson.booksapi.exception.ResourceNotFoundException;
 import com.github.maria_jansson.booksapi.model.Category;
 import com.github.maria_jansson.booksapi.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class CategoryService {
     }
 
     public CategoryDTO getOneCategory(Long id) {
-        Category category = categoryRepo.findById(id).orElseThrow();
+        Category category = categoryRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Category with id " + id + " not found."));
         return new CategoryDTO(category.getId(), category.getName());
     }
 }
