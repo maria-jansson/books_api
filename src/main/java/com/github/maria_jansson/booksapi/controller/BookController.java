@@ -2,7 +2,11 @@ package com.github.maria_jansson.booksapi.controller;
 
 import com.github.maria_jansson.booksapi.dto.BookDTO;
 import com.github.maria_jansson.booksapi.dto.BookRequestDTO;
+import com.github.maria_jansson.booksapi.dto.PageMetadata;
+import com.github.maria_jansson.booksapi.dto.PagedResponse;
 import com.github.maria_jansson.booksapi.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -30,16 +35,26 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<BookDTO>>> getAllBooks() {
-        List<BookDTO> books = bookService.getAllBooks();
+    public ResponseEntity<PagedResponse<EntityModel<BookDTO>>> getAllBooks(@RequestParam Optional<String> authorName, @RequestParam Optional<String> categoryName, Pageable pageable) {
+        Page<BookDTO> books = bookService.getAllBooks(authorName, categoryName, pageable);
         List<EntityModel<BookDTO>> bookModels = new ArrayList<>();
+
         for (BookDTO book : books) {
             EntityModel<BookDTO> model = EntityModel.of(book);
             model.add(linkTo(methodOn(BookController.class).getOneBook(book.id())).withSelfRel());
             bookModels.add(model);
         }
-        return ResponseEntity.ok(CollectionModel.of(bookModels,
-                linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel()));
+
+        CollectionModel<EntityModel<BookDTO>> collectionModel = CollectionModel.of(
+                bookModels,linkTo(methodOn(BookController.class).getAllBooks(authorName, categoryName, pageable)).withSelfRel());
+        PageMetadata pageMetadata = new PageMetadata(
+            books.getNumber(),
+            books.getSize(),
+            books.getTotalElements(),
+            books.getTotalPages()
+        );
+
+        return ResponseEntity.ok(new PagedResponse<>(collectionModel, pageMetadata));
     }
 
     @GetMapping("/{id}")

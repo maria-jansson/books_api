@@ -11,10 +11,13 @@ import com.github.maria_jansson.booksapi.model.Category;
 import com.github.maria_jansson.booksapi.repository.AuthorRepository;
 import com.github.maria_jansson.booksapi.repository.BookRepository;
 import com.github.maria_jansson.booksapi.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -28,20 +31,37 @@ public class BookService {
         this.categoryRepo = categoryRepo;
     }
 
-    public List<BookDTO> getAllBooks() {
-        List<Book> books = bookRepo.findAll();
-        List<BookDTO> bookDTOs = new ArrayList<>();
-        for (Book book : books) {
-            BookDTO bookDTO = bookToDTO(book);
-            bookDTOs.add(bookDTO);
+    public Page<BookDTO> getAllBooks(Optional<String> authorName, Optional<String> categoryName, Pageable pageable) {
+        Page<Book> books;
+        if (authorName.isPresent()) {
+            books = bookRepo.findByAuthorsNameContainingIgnoreCase(authorName.get(), pageable);
         }
-        return bookDTOs;
+        else if (categoryName.isPresent()) {
+            books = bookRepo.findByCategoriesNameContainingIgnoreCase(categoryName.get(), pageable);
+        } else {
+            books = bookRepo.findAll(pageable);
+        }
+        return books.map(this::bookToDTO);
     }
 
     public BookDTO getOneBook(Long id) {
         Book book = bookRepo.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Book with id " + id + " not found."));
         return bookToDTO(book);
+    }
+
+    public Page<BookDTO> getBooksByAuthor(Long id, Pageable pageable) {
+        authorRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Author with id " + id + " not found."));
+        Page<Book> books = bookRepo.findByAuthorsId(id, pageable);
+        return books.map(this::bookToDTO);
+    }
+
+    public Page<BookDTO> getBooksByCategory(Long id, Pageable pageable) {
+        categoryRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Category with id " + id + " not found."));
+        Page<Book> books = bookRepo.findByCategoriesId(id, pageable);
+        return books.map(this::bookToDTO);
     }
 
     public BookDTO createBook(BookRequestDTO data) {
