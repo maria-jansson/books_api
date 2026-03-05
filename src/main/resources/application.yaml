@@ -15,3 +15,8 @@ spring:
           batch_size: 50
         order_inserts: true
         order_updates: true
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 50
