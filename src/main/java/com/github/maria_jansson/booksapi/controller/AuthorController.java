@@ -6,6 +6,8 @@ import com.github.maria_jansson.booksapi.dto.BookDTO;
 import com.github.maria_jansson.booksapi.dto.PageMetadata;
 import com.github.maria_jansson.booksapi.dto.PagedResponse;
 import com.github.maria_jansson.booksapi.service.AuthorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -27,7 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Exposes read-only endpoints for retrieving authors.
  */
 @RestController
-@RequestMapping("/api/v1/authors")
+@RequestMapping(value = "/api/v1/authors", produces = "application/json")
 public class AuthorController {
     private final AuthorService authorService;
 
@@ -35,7 +37,10 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
+    @Operation(summary = "Get author by ID", description = "Returns a single author with HATEOAS links.")
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "200", description = "Returns a single author")
+    @ApiResponse(responseCode = "404", description = "Author not found")
     public ResponseEntity<EntityModel<AuthorDTO>> getOneAuthor(@PathVariable Long id) {
         AuthorDTO authorDTO = authorService.getOneAuthor(id);
         EntityModel<AuthorDTO> model = EntityModel.of(authorDTO);
@@ -44,7 +49,9 @@ public class AuthorController {
         return ResponseEntity.ok(model);
     }
 
+    @Operation(summary = "Get all authors", description = "Returns a paginated list of authors. Filter by authorName.")
     @GetMapping
+    @ApiResponse(responseCode = "200", description = "Returns paginated list of authors")
     public ResponseEntity<PagedResponse<EntityModel<AuthorDTO>>> getAllAuthors(@RequestParam Optional<String> authorName, Pageable pageable) {
         Page<AuthorDTO> authors = authorService.getAllAuthors(authorName, pageable);
         List<EntityModel<AuthorDTO>> authorModels = new ArrayList<>();
@@ -75,7 +82,10 @@ public class AuthorController {
         return ResponseEntity.ok(new PagedResponse<>(collectionModel, pageMetadata));
     }
 
+    @Operation(summary = "Get books by author", description = "Returns a paginated list of books written by the specified author.")
     @GetMapping("/{id}/books")
+    @ApiResponse(responseCode = "200", description = "Returns books by author")
+    @ApiResponse(responseCode = "404", description = "Author not found")
     public ResponseEntity<PagedResponse<EntityModel<BookDTO>>> getAllBooksByAuthor(@PathVariable Long id, Pageable pageable) {
         Page<BookDTO> books = authorService.getBooksByAuthor(id, pageable);
         List<EntityModel<BookDTO>> bookModels = new ArrayList<>();

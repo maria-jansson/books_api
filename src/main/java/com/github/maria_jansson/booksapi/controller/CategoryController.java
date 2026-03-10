@@ -5,6 +5,8 @@ import com.github.maria_jansson.booksapi.dto.CategoryDTO;
 import com.github.maria_jansson.booksapi.dto.PageMetadata;
 import com.github.maria_jansson.booksapi.dto.PagedResponse;
 import com.github.maria_jansson.booksapi.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -26,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Exposes read-only endpoints for retrieving categories.
  */
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping(value = "/api/v1/categories", produces = "application/json")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -34,7 +36,10 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @Operation(summary = "Get category by ID", description = "Returns a single category with HATEOAS links.")
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "200", description = "Returns a single category")
+    @ApiResponse(responseCode = "404", description = "Category not found")
     public ResponseEntity<EntityModel<CategoryDTO>> getOneCategory(@PathVariable Long id) {
         CategoryDTO categoryDTO = categoryService.getOneCategory(id);
         EntityModel<CategoryDTO> model = EntityModel.of(categoryDTO);
@@ -43,7 +48,9 @@ public class CategoryController {
         return ResponseEntity.ok(model);
     }
 
+    @Operation(summary = "Get all categories", description = "Returns a paginated list of categories. Filter by categoryName.")
     @GetMapping
+    @ApiResponse(responseCode = "200", description = "Returns paginated list of categories")
     public ResponseEntity<PagedResponse<EntityModel<CategoryDTO>>> getAllCategories(@RequestParam Optional<String> categoryName, Pageable pageable) {
         Page<CategoryDTO> categories = categoryService.getAllCategories(categoryName, pageable);
         List<EntityModel<CategoryDTO>> categoryModels = new ArrayList<>();
@@ -74,7 +81,10 @@ public class CategoryController {
         return ResponseEntity.ok(new PagedResponse<>(collectionModel, pageMetadata));
     }
 
+    @Operation(summary = "Get books in category", description = "Returns a paginated list of books in the specified category.")
     @GetMapping("/{id}/books")
+    @ApiResponse(responseCode = "200", description = "Returns books in category")
+    @ApiResponse(responseCode = "404", description = "Category not found")
     public ResponseEntity<PagedResponse<EntityModel<BookDTO>>> getAllBooksInCategory(@PathVariable Long id, Pageable pageable) {
         Page<BookDTO> books = categoryService.getBooksByCategory(id, pageable);
         List<EntityModel<BookDTO>> bookModels = new ArrayList<>();
