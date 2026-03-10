@@ -21,7 +21,6 @@ public class OpenApiConfig {
                                 "Authenticate via /api/v1/auth/register or /api/v1/auth/login " +
                                 "and use the token in the Authorize button below.")
                         .version("1.0.0"))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()
                         .addSecuritySchemes("Bearer Authentication", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
