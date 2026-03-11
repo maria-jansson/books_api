@@ -2,7 +2,7 @@ package booksapi.auth;
 
 import booksapi.model.User;
 import booksapi.repository.UserRepository;
-
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +17,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  @NonNull
+  public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
     User user = userRepo.findByUsername(username).orElseThrow(() ->
             new UsernameNotFoundException("No user with that username found."));
     return convertUserToUserDetails(user);

@@ -37,8 +37,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(
-          HttpMessageNotReadableException exception) {
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable() {
     LocalDateTime timestamp = LocalDateTime.now();
     ErrorResponse error = new ErrorResponse(
             400,
@@ -61,7 +60,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {
+  public ResponseEntity<ErrorResponse> handleGenericException() {
     LocalDateTime timestamp = LocalDateTime.now();
     ErrorResponse error = new ErrorResponse(
             500,

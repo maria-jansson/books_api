@@ -10,6 +10,7 @@ import booksapi.repository.CategoryRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class DataLoader implements CommandLineRunner {
   }
 
   @Override
-  public void run(String... args) throws Exception {
+  public void run(String @NonNull ... args) throws Exception {
     if (bookRepo.count() > 0) {
       return;
     }
