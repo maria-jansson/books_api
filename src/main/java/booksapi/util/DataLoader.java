@@ -119,6 +119,7 @@ public class DataLoader implements CommandLineRunner {
    * @return the existing or newly created author
    */
   private Author getOrCreateAuthor(String authorsRaw, Map<String, Author> authorMap) {
+    // Remove "By " prefix that some author names have in the dataset
     String cleanName = authorsRaw.replaceAll("(?i)^By\\s+", "");
     return authorMap.computeIfAbsent(
         cleanName,

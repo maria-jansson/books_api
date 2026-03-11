@@ -44,6 +44,7 @@ public class BookService {
 
   /**
    * Returns a paginated list of books, optionally filtered by author or category name.
+   * If both parameters are added, only authorName is used.
    *
    * @param authorName optional filter for author name
    * @param categoryName optional filter for category name
@@ -53,6 +54,7 @@ public class BookService {
   public Page<BookDTO> getAllBooks(
       Optional<String> authorName, Optional<String> categoryName, Pageable pageable) {
     Page<Book> books;
+    // Note: only one filter is applied at a time - authorName takes precedence
     if (authorName.isPresent()) {
       books = bookRepo.findByAuthorsNameContainingIgnoreCase(authorName.get(), pageable);
     } else if (categoryName.isPresent()) {
