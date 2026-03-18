@@ -59,7 +59,9 @@ The seed script only runs if the database is empty — restarting the applicatio
 
 JWT (JSON Web Tokens) was chosen for its stateless nature, which fits well with a REST API. 
 Tokens are generated on login/register and must be included in the Authorization header as a Bearer token for write operations. 
-The token expires after 24 hours.
+The token expires after 24 hours.  
+Token invalidation is not implemented due to time constraints, but this could be handled by using shorter expiry times combined with refresh tokens, or
+maintaining a token blocklist.
 
 Alternatives include session-based authentication (stateful, requires server-side storage) and API keys (simpler but 
 less flexible for user-specific permissions).
